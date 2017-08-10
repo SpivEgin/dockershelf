@@ -137,15 +137,15 @@ if __name__ == '__main__':
             microbadger_badge = 'https://images.microbadger.com/badges/image/dockershelf/python:{0}.svg'.format(python_os_version)
             microbadger_url = 'https://microbadger.com/images/dockershelf/python:{0}'.format(python_os_version)
 
-            if python_os == 'stable':
-                if python_version == '2.7':
-                    travis_matrixlist.append('        - DOCKER_IMAGE_NAME="dockershelf/python:{0}" DOCKER_IMAGE_EXTRA_TAGS="dockershelf/python:{1} dockershelf/python:2"'.format(python_os_version, python_version))
-                elif python_version == '3.5':
-                    travis_matrixlist.append('        - DOCKER_IMAGE_NAME="dockershelf/python:{0}" DOCKER_IMAGE_EXTRA_TAGS="dockershelf/python:{1} dockershelf/python:3"'.format(python_os_version, python_version))
-                else:
-                    travis_matrixlist.append('        - DOCKER_IMAGE_NAME="dockershelf/python:{0}" DOCKER_IMAGE_EXTRA_TAGS="dockershelf/python:{1}"'.format(python_os_version, python_version))
+            if python_os == 'unstable':
+                travis_matrixlist.append('        - DOCKER_IMAGE_NAME="dockershelf/python:{0}" DOCKER_IMAGE_EXTRA_TAGS="dockershelf/python:{1}"'.format(python_os_version, python_version))
             else:
-                travis_matrixlist.append('        - DOCKER_IMAGE_NAME="dockershelf/python:{0}"'.format(python_os_version))
+                if python_version == '2.7':
+                    travis_matrixlist.append('        - DOCKER_IMAGE_NAME="dockershelf/python:{0}" DOCKER_IMAGE_EXTRA_TAGS="dockershelf/python:2"'.format(python_os_version))
+                elif python_version == '3.5':
+                    travis_matrixlist.append('        - DOCKER_IMAGE_NAME="dockershelf/python:{0}" DOCKER_IMAGE_EXTRA_TAGS="dockershelf/python:3"'.format(python_os_version))
+                else:
+                    travis_matrixlist.append('        - DOCKER_IMAGE_NAME="dockershelf/python:{0}"'.format(python_os_version))
 
             python_readme_tablelist.append('|[`{0}`][{1}]|`{2}`|[![][{3}]][{4}]|[![][{5}]][{6}]|'.format(
                 docker_tag, docker_url, python_os_version, dockerfile_badge, dockerfile_url, microbadger_badge, microbadger_url))

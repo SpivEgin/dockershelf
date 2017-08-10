@@ -31,10 +31,7 @@ PY_VER_STR="python${PY_VER_NUM}"
 DPKG_TOOLS_DEPENDS="aptitude deborphan debian-keyring dpkg-dev"
 DPKG_BUILD_DEPENDS="build-essential zlib1g-dev libbz2-dev libssl-dev \
     libreadline-dev libncurses5-dev libsqlite3-dev libgdbm-dev libdb-dev \
-    libexpat-dev libpcap-dev liblzma-dev libpcre3-dev"
-
-# These options are passed to make because we need to speedup the build.
-DEB_BUILD_OPTIONS="parallel=$( nproc ) nocheck nobench"
+    libexpat-dev libpcap-dev liblzma-dev libpcre3-dev python2.7"
 
 # Load helper functions
 source "${BASEDIR}/library.sh"

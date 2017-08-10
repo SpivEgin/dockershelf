@@ -31,22 +31,18 @@
 
 The Python images are built using a bash script [`python/build-image.sh`](https://github.com/LuisAlejandro/dockershelf/blob/master/python/build-image.sh), you can check it out for details.
 
-Each python release is downloaded from Debian sources. Due to the nature of debian packaging, some releases of Python can only be compiled on specific releases of Debian. Based on that premise, Python will be compiled against the corresponding image and then upgraded to Debian Sid.
+Each python release is installed using [Pythonz](http://saghul.github.io/pythonz/).
 
 We'll explain the overall process here:
 
 1. Built `FROM dockershelf/debian:<release>`.
 2. Labelled according to [label-schema.org](http://label-schema.org).
-3. Install developer tools to handle the python source download.
-4. Download Python source with `apt-get source python<release>`.
-5. Parse `Build-Depends` and `Depends` fields.
-6. Install `Build-Depends` and `Depends` packages.
-7. Compile Python using `make -f debian/rules install`.
-8. Uninstall `Build-Depends`, developer tools and orphan packages.
-9. Install Python by copying the compiled files to their corresponding places.
-10. Upgrade image to Debian Sid.
-11. Install `pip`.
-12. Shrink image by deleting unnecessary files.
+3. Install developer tools and build depends to handle the Pythonz install and Python compilation.
+4. Install Pythonz.
+5. Install Python according to version.
+6. Removing unnecessary packages.
+7. Install `pip`.
+8. Shrink image by deleting unnecessary files.
 
 ## Made with :heart: and :hamburger:
 
@@ -54,6 +50,6 @@ We'll explain the overall process here:
 
 My name is Luis ([@LuisAlejandro](https://github.com/LuisAlejandro)) and I'm a Free and Open-Source Software developer living in Maracay, Venezuela.
 
-If you like what I do, please support me on [Patreon](https://www.patreon.com/luisalejandro),  [Flattr](https://flattr.com/profile/luisalejandro), or donate via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=B8LPXHQY8QE8Y), so that I can continue doing what I love.
+If you like what I do, please support me on [Patreon](https://www.patreon.com/luisalejandro), [Flattr](https://flattr.com/profile/luisalejandro), or donate via [PayPal](https://www.paypal.me/martinezfaneyth), so that I can continue doing what I love.
 
 > Blog [huntingbears.com.ve](http://huntingbears.com.ve) · GitHub [@LuisAlejandro](https://github.com/LuisAlejandro) · Twitter [@LuisAlejandro](https://twitter.com/LuisAlejandro)
