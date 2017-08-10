@@ -196,13 +196,13 @@ EOF
 
 cat > "${TARGET}/etc/motd" << 'EOF'
 
-           This image is part of            
+         This image was built using         
  ,-.          .               .       .     
  |  \         |               |       |  ,- 
  |  | ,-. ,-. | , ,-. ;-. ,-. |-. ,-. |  |  
  |  / | | |   |<  |-´ |   `-. | | |-´ |  |- 
  `-´  `-´ `-´ ‘ ` `-´ ‘   `-´ ‘ ‘ `-´ ‘  |  
-                                        -´   
+                                        -´  
         For more information, visit         
 https://github.com/LuisAlejandro/dockershelf
 

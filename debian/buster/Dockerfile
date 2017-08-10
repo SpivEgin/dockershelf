@@ -6,8 +6,8 @@ ARG VCS_REF
 ARG VERSION
 
 LABEL org.label-schema.build-date=${BUILD_DATE} \
-      org.label-schema.name="debian-jessie" \
-      org.label-schema.description="A Debian jessie minimal image built from scratch." \
+      org.label-schema.name="debian-buster" \
+      org.label-schema.description="A Debian buster minimal image built from scratch." \
       org.label-schema.url="https://github.com/LuisAlejandro/dockershelf" \
       org.label-schema.vcs-ref=${VCS_REF} \
       org.label-schema.vcs-url="https://github.com/LuisAlejandro/dockershelf" \
@@ -16,7 +16,7 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
       org.label-schema.schema-version="1.0.0-rc.1"
 
 ENV LANG="en_US.UTF-8" LANGUAGE="en_US.UTF-8" LC_ALL="en_US.UTF-8" \
-    TERM="xterm" DEBIAN_FRONTEND="noninteractive" DEBIAN_RELEASE="jessie"
+    TERM="xterm" DEBIAN_FRONTEND="noninteractive" DEBIAN_RELEASE="buster"
 
 ADD base /
 
