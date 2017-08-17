@@ -23,15 +23,13 @@ set -exuo pipefail
 
 # Some default values.
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PY_VER_NUM_MINOR="$( echo ${PY_VER_NUM} | awk -F'.' '{print $1"."$2}')"
 PY_VER_NUM_MAJOR="$( echo ${PY_VER_NUM} | awk -F'.' '{print $1}')"
+PY_VER_NUM_MINOR_STR="python${PY_VER_NUM_MINOR}"
 PY_VER_NUM_MAJOR_STR="python${PY_VER_NUM_MAJOR}"
-PY_VER_STR="python${PY_VER_NUM}"
 
 # Some tools are needed.
 DPKG_TOOLS_DEPENDS="aptitude deborphan debian-keyring dpkg-dev"
-DPKG_BUILD_DEPENDS="build-essential zlib1g-dev libbz2-dev libssl-dev \
-    libreadline-dev libncurses5-dev libsqlite3-dev libgdbm-dev libdb-dev \
-    libexpat-dev libpcap-dev liblzma-dev libpcre3-dev python2.7"
 
 # Load helper functions
 source "${BASEDIR}/library.sh"
@@ -40,26 +38,37 @@ source "${BASEDIR}/library.sh"
 # ------------------------------------------------------------------------------
 # We need to install the packages defined at ${DPKG_TOOLS_DEPENDS} because
 # some commands are needed to download the source code before installing the
-# build dependencies.
+# build dependencies. Also, ${DPKG_BUILD_DEPENDS} must be installed to
+# allow installation of Pythonz and Python.
 
-msginfo "Installing tools and upgrading image ..."
+msginfo "Installing tools, build depends and upgrading image ..."
 cmdretry apt-get update
 cmdretry apt-get -d upgrade
 cmdretry apt-get upgrade
-cmdretry apt-get -d install ${DPKG_TOOLS_DEPENDS} ${DPKG_BUILD_DEPENDS}
-cmdretry apt-get install ${DPKG_TOOLS_DEPENDS} ${DPKG_BUILD_DEPENDS}
+cmdretry apt-get -d install ${DPKG_TOOLS_DEPENDS}
+cmdretry apt-get install ${DPKG_TOOLS_DEPENDS}
 
-# Python: Compilation
+# Python: Installing
 # ------------------------------------------------------------------------------
-# This is the tricky part: we will use the "clean" and "install" targets of the
-# debian/rules makefile (which are used to build a debian package) to compile
-# our python source code. This will generate a python build tree in the 
-# debian folder which we will later process.
+# We will use Pythonz to take care of python compilation for us.
 
-msginfo "Compiling python ..."
-curl -fsSL "https://raw.github.com/saghul/pythonz/master/pythonz-install" | bash
-pythonz install --verbose ${PY_VER_NUM}
-pythonz cleanup
+msginfo "Configuring /etc/apt/sources.list ..."
+cat > /etc/apt/sources.list.d/libssl.list << EOF
+deb http://deb.debian.org/debian jessie-backports main
+deb http://deb.debian.org/debian jessie main
+EOF
+
+{
+    echo "deb [trusted=yes] http://ppa.launchpad.net/fkrull/deadsnakes/ubuntu xenial main"
+} | tee /etc/apt/sources.list.d/python.list > /dev/null
+
+msginfo "Installing Python ..."
+cmdretry apt-get update
+cmdretry apt-get -d install ${PY_VER_NUM_MINOR_STR}
+cmdretry apt-get install ${PY_VER_NUM_MINOR_STR}
+
+rm -rfv /etc/apt/sources.list.d/libssl.list
+cmdretry apt-get update
 
 # Apt: Remove build depends
 # ------------------------------------------------------------------------------
@@ -67,9 +76,9 @@ pythonz cleanup
 # because some files might be confused with already installed python packages.
 
 msginfo "Removing unnecessary packages ..."
-cmdretry apt-get purge $( echo ${DPKG_BUILD_DEPENDS} \
-    | sed "$( printf 's/\s%s\s/ /g;' ${DPKG_RUN_DEPENDS} )" )
-cmdretry apt-get autoremove
+# cmdretry apt-get purge $( echo ${DPKG_BUILD_DEPENDS} \
+#     | sed "$( printf 's/\s%s\s/ /g;' ${DPKG_RUN_DEPENDS} )" )
+# cmdretry apt-get autoremove
 
 # This is clever uh? Figure it out myself, ha!
 cmdretry apt-get purge $( apt-mark showauto $( deborphan -a -n \
@@ -85,10 +94,7 @@ cmdretry apt-get purge ${DPKG_TOOLS_DEPENDS}
 cmdretry apt-get autoremove
 
 # Linking to make this the default version of python
-PY_BIN_PATH="$( pythonz locate ${PY_VER_NUM} )"
-ln -sfv ${PY_BIN_PATH} /usr/bin/python
-ln -sfv ${PY_BIN_PATH} /usr/bin/${PY_VER_STR}
-ln -sfv ${PY_BIN_PATH} /usr/bin/${PY_VER_NUM_MAJOR_STR}
+ln -sfv /usr/bin/${PY_VER_NUM_MAJOR_STR} /usr/bin/python
 
 # Pip: Installation
 # ------------------------------------------------------------------------------
@@ -96,9 +102,9 @@ ln -sfv ${PY_BIN_PATH} /usr/bin/${PY_VER_NUM_MAJOR_STR}
 
 msginfo "Installing pip ..."
 if [ "${PY_VER_NUM}" == "3.2" ]; then
-    curl -fsSL "https://bootstrap.pypa.io/3.2/get-pip.py" | ${PY_VER_STR} - 'setuptools<30'
+    curl -fsSL "https://bootstrap.pypa.io/3.2/get-pip.py" | ${PY_VER_NUM_MINOR_STR} - 'setuptools<30'
 else
-    curl -fsSL "https://bootstrap.pypa.io/get-pip.py" | ${PY_VER_STR}
+    curl -fsSL "https://bootstrap.pypa.io/get-pip.py" | ${PY_VER_NUM_MINOR_STR}
 fi
 
 # Final cleaning

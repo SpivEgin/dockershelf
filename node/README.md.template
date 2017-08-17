@@ -18,22 +18,15 @@
 
 The Node images are built using a bash script [`node/build-image.sh`](https://github.com/LuisAlejandro/dockershelf/blob/master/node/build-image.sh), you can check it out for details.
 
-Each node release is downloaded from Debian sources. Due to the nature of debian packaging, some releases of Node can only be compiled on specific releases of Debian. Based on that premise, Node will be compiled against the corresponding image and then upgraded to Debian Sid.
+Each node release is installed using the [nodesource scripts](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions).
 
 We'll explain the overall process here:
 
 1. Built `FROM dockershelf/debian:<release>`.
 2. Labelled according to [label-schema.org](http://label-schema.org).
-3. Install developer tools to handle the node source download.
-4. Download Node source with `apt-get source node<release>`.
-5. Parse `Build-Depends` and `Depends` fields.
-6. Install `Build-Depends` and `Depends` packages.
-7. Compile Node using `make -f debian/rules install`.
-8. Uninstall `Build-Depends`, developer tools and orphan packages.
-9. Install Node by copying the compiled files to their corresponding places.
-10. Upgrade image to Debian Sid.
-11. Install `pip`.
-12. Shrink image by deleting unnecessary files.
+3. Install developer tools and build depends to handle the nodesource script install.
+4. Install Node.
+5. Shrink image by deleting unnecessary files.
 
 ## Made with :heart: and :hamburger:
 

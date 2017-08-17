@@ -19,7 +19,7 @@
 #   along with this program. If not, see http://www.gnu.org/licenses.
 
 # Exit early if there are errors and be verbose
-# set -exuo pipefail
+set -exuo pipefail
 
 # Load helper functions
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

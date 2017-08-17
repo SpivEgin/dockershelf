@@ -15,7 +15,7 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
       org.label-schema.version=${VERSION} \
       org.label-schema.schema-version="1.0.0-rc.1"
 
-ENV PY_VER_NUM="2.7" PY_DEBIAN_SUITE="unstable" PYTHONIOENCODING="UTF-8"
+ENV PY_VER_NUM="2.7.13" PYTHONIOENCODING="UTF-8"
 
 COPY *.sh /usr/share/dockershelf/python/
 RUN bash /usr/share/dockershelf/python/build-image.sh

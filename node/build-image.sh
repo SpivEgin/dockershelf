@@ -23,18 +23,10 @@ set -exuo pipefail
 
 # Some default values.
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PY_VER_NUM_MAJOR="$( echo ${PY_VER_NUM} | awk -F'.' '{print $1}')"
-PY_VER_NUM_MAJOR_STR="python${PY_VER_NUM_MAJOR}"
-PY_VER_STR="python${PY_VER_NUM}"
 
 # Some tools are needed.
 DPKG_TOOLS_DEPENDS="aptitude deborphan debian-keyring dpkg-dev"
-DPKG_BUILD_DEPENDS="build-essential zlib1g-dev libbz2-dev libssl-dev \
-    libreadline-dev libncurses5-dev libsqlite3-dev libgdbm-dev libdb-dev \
-    libexpat-dev libpcap-dev liblzma-dev libpcre3-dev"
-
-# These options are passed to make because we need to speedup the build.
-DEB_BUILD_OPTIONS="parallel=$( nproc ) nocheck nobench"
+DPKG_BUILD_DEPENDS=""
 
 # Load helper functions
 source "${BASEDIR}/library.sh"
@@ -49,20 +41,17 @@ msginfo "Installing tools and upgrading image ..."
 cmdretry apt-get update
 cmdretry apt-get -d upgrade
 cmdretry apt-get upgrade
-cmdretry apt-get -d install ${DPKG_TOOLS_DEPENDS} ${DPKG_BUILD_DEPENDS}
-cmdretry apt-get install ${DPKG_TOOLS_DEPENDS} ${DPKG_BUILD_DEPENDS}
+cmdretry apt-get -d install ${DPKG_TOOLS_DEPENDS} ${DPKG_BUILD_DEPENDS} gnupg
+cmdretry apt-get install ${DPKG_TOOLS_DEPENDS} ${DPKG_BUILD_DEPENDS} gnupg
 
-# Python: Compilation
+# Node: Installation
 # ------------------------------------------------------------------------------
-# This is the tricky part: we will use the "clean" and "install" targets of the
-# debian/rules makefile (which are used to build a debian package) to compile
-# our python source code. This will generate a python build tree in the 
-# debian folder which we will later process.
+# We will use the nodesource script to install node.
 
-msginfo "Compiling python ..."
-curl -fsSL "https://raw.github.com/saghul/pythonz/master/pythonz-install" | bash
-pythonz install --verbose ${PY_VER_NUM}
-pythonz cleanup
+msginfo "Installing Node ..."
+curl -fsSL "https://deb.nodesource.com/setup_${NODE_VER_NUM}.x" | bash
+cmdretry apt-get -d install nodejs
+cmdretry apt-get install nodejs
 
 # Apt: Remove build depends
 # ------------------------------------------------------------------------------
@@ -86,23 +75,6 @@ cmdretry apt-get autoremove
 
 cmdretry apt-get purge ${DPKG_TOOLS_DEPENDS}
 cmdretry apt-get autoremove
-
-# Linking to make this the default version of python
-PY_BIN_PATH="$( pythonz locate ${PY_VER_NUM} )"
-ln -sfv ${PY_BIN_PATH} /usr/bin/python
-ln -sfv ${PY_BIN_PATH} /usr/bin/${PY_VER_STR}
-ln -sfv ${PY_BIN_PATH} /usr/bin/${PY_VER_NUM_MAJOR_STR}
-
-# Pip: Installation
-# ------------------------------------------------------------------------------
-# Let's bring in the old reliable pip guy.
-
-msginfo "Installing pip ..."
-if [ "${PY_VER_NUM}" == "3.2" ]; then
-    curl -fsSL "https://bootstrap.pypa.io/3.2/get-pip.py" | ${PY_VER_STR} - 'setuptools<30'
-else
-    curl -fsSL "https://bootstrap.pypa.io/get-pip.py" | ${PY_VER_STR}
-fi
 
 # Final cleaning
 # ------------------------------------------------------------------------------

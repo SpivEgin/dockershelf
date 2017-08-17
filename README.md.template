@@ -40,17 +40,23 @@ These are python images compiled from source, using the `debian/rules` makefile 
 
 This is an image based on [`dockershelf/debian:sid`](https://microbadger.com/images/dockershelf/debian:sid) with `texlive-fonts-recommended`, `texlive-latex-base`, `texlive-latex-extra` and `latex-xcolor` packages installed. It should be enough to use the `pdflatex` binary for basic Latex to PDF conversion. Check out [latex/README.md](https://github.com/LuisAlejandro/dockershelf/blob/master/latex/README.md) for more details.
 
-[ilatexl]: https://hub.docker.com/r/dockershelf/latex
-[dlatex]: https://img.shields.io/badge/-latex%2Fsid%2FDockerfile-blue.svg
-[dlatexl]: https://github.com/LuisAlejandro/dockershelf/blob/master/latex/sid/Dockerfile
-[llatex]: https://images.microbadger.com/badges/image/dockershelf/latex:sid.svg
-[llatexl]: https://microbadger.com/images/dockershelf/latex:sid
-
 ![](https://gitcdn.xyz/repo/LuisAlejandro/dockershelf/master/table.svg)
 
 |Image                             |Release|Dockerfile            |Layers                |
 |----------------------------------|-------|----------------------|----------------------|
-|[`dockershelf/latex:sid`][ilatexl]|`sid`  |[![][dlatex]][dlatexl]|[![][llatex]][llatexl]|
+%%LATEX_TABLE%%
+
+![](https://gitcdn.xyz/repo/LuisAlejandro/dockershelf/master/table.svg)
+
+### Node
+
+These are node images built using the [nodesource installation scripts](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions). Check out [python/README.md](https://github.com/LuisAlejandro/dockershelf/blob/master/python/README.md) for more details.
+
+![](https://gitcdn.xyz/repo/LuisAlejandro/dockershelf/master/table.svg)
+
+|Image                                    |Release  |Dockerfile                |Layers                    |
+|-----------------------------------------|---------|--------------------------|--------------------------|
+%%NODE_TABLE%%
 
 ![](https://gitcdn.xyz/repo/LuisAlejandro/dockershelf/master/table.svg)
 
